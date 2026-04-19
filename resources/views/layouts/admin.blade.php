@@ -20,8 +20,15 @@
         }
         #sidebar-overlay { transition: opacity .22s ease; }
 
+        /* ── Mobile: oculto por defecto, visible cuando is-open ── */
+        @media (max-width: 1023px) {
+            #admin-sidebar              { transform: translateX(-100%); }
+            #admin-sidebar.is-open      { transform: translateX(0); }
+        }
+
         /* ── Collapsed desktop state ── */
         @media (min-width: 1024px) {
+            #admin-sidebar              { transform: translateX(0) !important; }
             #admin-shell[data-collapsed="true"] #admin-sidebar { width: 4.5rem; }
 
             /* Hide text labels when collapsed */
@@ -49,9 +56,6 @@
                 padding: 1rem 0;
             }
         }
-
-        /* Mobile bottom-nav safe area */
-        .bottom-nav { padding-bottom: env(safe-area-inset-bottom, 0); }
 
         /* ══════════════════════════════════════════════════
            DARK MODE — applied when <html class="dark">
@@ -213,7 +217,7 @@
     {{-- ─── SIDEBAR ─── --}}
     <aside
         id="admin-sidebar"
-        class="fixed inset-y-0 left-0 z-30 flex -translate-x-full flex-col overflow-hidden bg-white shadow-xl ring-1 ring-black/5 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 lg:shadow-none lg:ring-0 lg:border-r lg:border-slate-200"
+        class="fixed inset-y-0 left-0 z-30 flex flex-col overflow-hidden bg-white shadow-xl ring-1 ring-black/5 lg:sticky lg:top-0 lg:h-screen lg:shadow-none lg:ring-0 lg:border-r lg:border-slate-200"
     >
         {{-- Brand header --}}
         <div class="sb-brand-row flex shrink-0 items-center gap-3 border-b border-slate-100 px-5 py-4">
@@ -531,7 +535,7 @@
         </header>
 
         {{-- CONTENT --}}
-        <main class="flex-1 px-4 py-6 pb-24 sm:px-6 sm:py-8 lg:pb-8">
+        <main class="flex-1 px-4 py-6 sm:px-6 sm:py-8">
             @yield('content')
         </main>
     </div>
@@ -597,29 +601,6 @@
         </div>
     @endif
 
-    {{-- ─── MOBILE BOTTOM NAV ─── --}}
-    <nav class="bottom-nav fixed inset-x-0 bottom-0 z-10 flex border-t border-slate-200 bg-white/95 backdrop-blur-sm lg:hidden" aria-label="Mobile">
-        @php
-            $mobileLinks = [
-                ['route' => 'admin.dashboard',                     'icon' => 'home',      'label' => 'Home',     'permission' => null],
-                ['route' => 'admin.clientes.index',                'icon' => 'users',     'label' => 'Clients',  'permission' => 'manage_clients'],
-                ['route' => 'admin.facturas.index',                'icon' => 'document',  'label' => 'Invoices', 'permission' => 'manage_invoices'],
-                ['route' => 'admin.leads.index',                   'icon' => 'clipboard', 'label' => 'Leads',    'permission' => 'manage_leads'],
-                ['route' => 'admin.configuracion.servicios.index', 'icon' => 'cog',       'label' => 'Settings', 'permission' => 'manage_services'],
-            ];
-        @endphp
-        @foreach ($mobileLinks as $ml)
-            @php $isActive = request()->routeIs($ml['route']); @endphp
-            @if (!$ml['permission'] || auth()->user()?->hasPermission($ml['permission']))
-            <a href="{{ route($ml['route']) }}"
-               class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-colors
-                      {{ $isActive ? 'text-brand-navy' : 'text-slate-400 hover:text-brand-navy' }}">
-                <x-admin.sidebar-icon name="{{ $ml['icon'] }}" class="{{ $isActive ? 'h-5 w-5 text-brand-turquoise' : 'h-5 w-5' }}" />
-                {{ $ml['label'] }}
-            </a>
-            @endif
-        @endforeach
-    </nav>
 </div>
 
 {{-- ── Notification bell JavaScript ── --}}
@@ -692,14 +673,16 @@
 
     /* ── Mobile drawer ── */
     function mobileOpen() {
-        sidebar.style.transform = 'translateX(0)';
-        overlay.style.opacity   = '1';
+        if (!sidebar || !overlay) return;
+        sidebar.classList.add('is-open');
+        overlay.style.opacity       = '1';
         overlay.style.pointerEvents = 'auto';
         document.body.style.overflow = 'hidden';
     }
     function mobileClose() {
-        sidebar.style.transform = '';
-        overlay.style.opacity   = '0';
+        if (!sidebar || !overlay) return;
+        sidebar.classList.remove('is-open');
+        overlay.style.opacity       = '0';
         overlay.style.pointerEvents = 'none';
         document.body.style.overflow = '';
     }
@@ -715,12 +698,7 @@
     });
 
     window.addEventListener('resize', function () {
-        if (window.innerWidth >= 1024) {
-            sidebar.style.transform = '';
-            overlay.style.opacity   = '0';
-            overlay.style.pointerEvents = 'none';
-            document.body.style.overflow = '';
-        }
+        if (window.innerWidth >= 1024) mobileClose();
     });
 
     /* ── Desktop collapse ── */
