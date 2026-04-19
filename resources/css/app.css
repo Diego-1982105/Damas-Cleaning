@@ -1,0 +1,45 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+@source '../**/*.vue';
+
+/* Paleta "Damas Cleaning" — inspirada en el logo: rosa vinotinto + azul cielo */
+@theme {
+    --font-sans: 'Lato', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-heading: 'Montserrat', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Rosa vinotinto profundo — color dominante del logo (borde + delantal) */
+    --color-brand-navy: #831843;
+    /* Azul cielo suave — color secundario del logo (cintillo + uniforme) */
+    --color-brand-turquoise: #4db8d0;
+    --color-brand-fuchsia: #e91e63;
+    --color-brand-fuchsia-dark: #c2185b;
+    --color-brand-gold: #ffd740;
+    --color-brand-body: #4a5568;
+    /* Fondo claro con tinte rosado muy suave */
+    --color-brand-surface: #fdf3f7;
+    --color-brand-white: #ffffff;
+}
+
+@layer base {
+    body {
+        color: var(--color-brand-body);
+        background-color: var(--color-brand-white);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
