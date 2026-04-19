@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\Lead;
 use App\Models\User;
+use Dompdf\Dompdf;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -16,6 +18,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->configureDomPdfForDeployment();
+
         Paginator::useTailwind();
 
         // Register a Gate for every granular permission key.
@@ -41,5 +45,21 @@ class AppServiceProvider extends ServiceProvider
                 'unseenLeads' => $unseen,
             ]);
         });
+    }
+
+    /**
+     * DomPDF expects a writable font directory; DigitalOcean and other hosts
+     * also break if `config:cache` was built elsewhere and serialized a stale
+     * `realpath(base_path())` chroot, so file access under vendor/ fails.
+     */
+    private function configureDomPdfForDeployment(): void
+    {
+        if (! class_exists(Dompdf::class)) {
+            return;
+        }
+
+        File::ensureDirectoryExists(storage_path('fonts'));
+
+        config(['dompdf.options.chroot' => base_path()]);
     }
 }
