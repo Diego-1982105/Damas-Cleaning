@@ -13,6 +13,9 @@
 /.zed
 /auth.json
 /node_modules
+
+# Evita que `php artisan schema:dump` suba un SQL que migrate carga con el CLI `mysql` (no existe en App Platform).
+/database/schema/mysql-schema.sql
 /public/build
 /public/hot
 /public/storage
