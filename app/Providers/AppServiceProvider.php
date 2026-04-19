@@ -14,7 +14,38 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public function register(): void {}
+    public function register(): void
+    {
+        if (! class_exists(Dompdf::class)) {
+            return;
+        }
+
+        // barryvdh/laravel-dompdf throws if `realpath(public)` is false; on some
+        // hosts (e.g. release symlinks) the directory exists but realpath fails.
+        // This appends after package providers so it replaces the package binding.
+        $this->app->bind('dompdf', function ($app): Dompdf {
+            $options = $app->make('dompdf.options');
+            $dompdf = new Dompdf($options);
+
+            $configured = $app['config']->get('dompdf.public_path');
+            $public = ($configured !== null && $configured !== '')
+                ? (string) $configured
+                : base_path('public');
+
+            $resolved = realpath($public);
+            $basePath = $resolved !== false ? $resolved : $public;
+
+            if (! is_dir($basePath)) {
+                throw new \RuntimeException(
+                    'Dompdf cannot use public base path (not a directory): '.$public
+                );
+            }
+
+            $dompdf->setBasePath($basePath);
+
+            return $dompdf;
+        });
+    }
 
     public function boot(): void
     {
@@ -48,9 +79,9 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * DomPDF expects a writable font directory; DigitalOcean and other hosts
-     * also break if `config:cache` was built elsewhere and serialized a stale
-     * `realpath(base_path())` chroot, so file access under vendor/ fails.
+     * DomPDF needs writable font metrics storage and a chroot under the running
+     * app's base path. Use `storage/framework/...` so the same permissions as
+     * Laravel's cache apply (avoids a separate `storage/fonts` setup on PaaS).
      */
     private function configureDomPdfForDeployment(): void
     {
@@ -58,8 +89,13 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        File::ensureDirectoryExists(storage_path('fonts'));
+        $fontHome = storage_path('framework/dompdf-fonts');
+        File::ensureDirectoryExists($fontHome);
 
-        config(['dompdf.options.chroot' => base_path()]);
+        config([
+            'dompdf.options.chroot' => base_path(),
+            'dompdf.options.font_dir' => $fontHome,
+            'dompdf.options.font_cache' => $fontHome,
+        ]);
     }
 }

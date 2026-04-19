@@ -45,7 +45,10 @@ class InvoicePdfTest extends TestCase
 
     public function test_admin_can_download_invoice_pdf(): void
     {
-        $user = User::factory()->create(['role' => 'staff']);
+        $user = User::factory()->create([
+            'role' => 'staff',
+            'permissions' => ['manage_invoices'],
+        ]);
 
         $client = Client::query()->create([
             'name' => 'Georgia Sewer and Storm LLC',
@@ -76,7 +79,10 @@ class InvoicePdfTest extends TestCase
 
     public function test_admin_can_stream_invoice_pdf_preview(): void
     {
-        $user = User::factory()->create(['role' => 'staff']);
+        $user = User::factory()->create([
+            'role' => 'staff',
+            'permissions' => ['manage_invoices'],
+        ]);
 
         $client = Client::query()->create(['name' => 'ACME', 'email' => 'billing@acme.test']);
         $invoice = Invoice::query()->create([
@@ -106,7 +112,10 @@ class InvoicePdfTest extends TestCase
     {
         Mail::fake();
 
-        $user = User::factory()->create(['role' => 'staff']);
+        $user = User::factory()->create([
+            'role' => 'staff',
+            'permissions' => ['manage_invoices'],
+        ]);
 
         $client = Client::query()->create(['name' => 'ACME', 'email' => 'client@acme.test']);
         $invoice = Invoice::query()->create([
