@@ -53,6 +53,20 @@ In order to ensure that the Laravel community is welcoming to all, please review
 
 If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
+## Damas Cleaning — GitHub
+
+Remote: [https://github.com/Diego-1982105/Damas-Cleaning.git](https://github.com/Diego-1982105/Damas-Cleaning.git)
+
+From your machine (after GitHub auth: **Personal Access Token** for HTTPS, or **SSH key** added to your GitHub account):
+
+```bash
+cd /path/to/DamasClean
+git remote set-url origin https://github.com/Diego-1982105/Damas-Cleaning.git
+git push -u origin main
+```
+
+When Git asks for a password over HTTPS, use a [Personal Access Token](https://github.com/settings/tokens) with the `repo` scope, not your GitHub account password.
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
