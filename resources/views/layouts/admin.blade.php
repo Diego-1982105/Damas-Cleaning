@@ -218,7 +218,7 @@
         {{-- Brand header --}}
         <div class="sb-brand-row flex shrink-0 items-center gap-3 border-b border-slate-100 px-5 py-4">
             <img
-                src="{{ asset(config('branding.logo_path')) }}"
+                src="{{ config('branding.logo_href') }}"
                 alt="Logo"
                 class="h-9 w-9 shrink-0 rounded-xl object-cover"
             />
@@ -375,7 +375,7 @@
             </button>
 
             <div class="flex min-w-0 flex-1 items-center gap-2">
-                <img src="{{ asset(config('branding.logo_path')) }}" alt="" class="h-7 w-7 shrink-0 rounded-lg object-cover lg:hidden" />
+                <img src="{{ config('branding.logo_href') }}" alt="" class="h-7 w-7 shrink-0 rounded-lg object-cover lg:hidden" />
                 <h1 class="truncate font-heading text-sm font-semibold text-brand-navy sm:text-base">
                     @yield('title', 'Dashboard')
                 </h1>

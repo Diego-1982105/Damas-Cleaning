@@ -17,7 +17,7 @@
         <div class="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
             <a href="/" class="flex items-center gap-2.5" aria-label="Damas Cleaning — Home">
                 <img
-                    src="{{ asset(config('branding.logo_path')) }}"
+                    src="{{ config('branding.logo_href') }}"
                     alt=""
                     width="40"
                     height="40"

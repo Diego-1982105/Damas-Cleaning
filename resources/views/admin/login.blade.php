@@ -7,7 +7,7 @@
         {{-- Logo + brand --}}
         <div class="mb-8 flex flex-col items-center gap-3">
             <img
-                src="{{ asset(config('branding.logo_path')) }}"
+                src="{{ config('branding.logo_href') }}"
                 alt="{{ config('app.name') }}"
                 class="h-20 w-20 rounded-2xl object-cover shadow-lg ring-4 ring-white"
             />
