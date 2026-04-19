@@ -24,8 +24,8 @@ Route::post('/leads', [LeadController::class, 'store'])->name('leads.store');
 
 Route::get('/api/services', ServiceCatalogController::class)->name('api.services');
 
-// /login y /admin/* devuelven 404 — el panel vive en la ruta configurada en ADMIN_PREFIX.
-Route::get('/login', fn () => abort(404))->name('login');
+// Laravel usa la ruta nombrada «login» para redirigir invitados; el formulario está bajo ADMIN_PREFIX.
+Route::get('/login', fn () => redirect()->route('admin.login'))->name('login');
 Route::get('/admin/{any?}', fn () => abort(404))->where('any', '.*');
 
 Route::prefix(env('ADMIN_PREFIX', 'dc-staff'))->name('admin.')->group(function (): void {
