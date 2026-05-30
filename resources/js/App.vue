@@ -10,6 +10,7 @@ import SiteTestimonials from './components/SiteTestimonials.vue';
 import SiteContact from './components/SiteContact.vue';
 import SiteFooter from './components/SiteFooter.vue';
 import WhatsAppBubble from './components/WhatsAppBubble.vue';
+import { SpeedInsights } from '@vercel/speed-insights/vue';
 import { provide } from 'vue';
 
 const root = typeof document !== 'undefined' ? document.getElementById('app') : null;
@@ -27,6 +28,7 @@ const show = (key) => enabledSections === null || enabledSections.has(key);
 
 <template>
     <div class="min-h-screen bg-brand-white text-brand-body">
+        <SpeedInsights />
         <SiteHeader />
         <main>
             <SiteHero        v-if="show('hero')" />
